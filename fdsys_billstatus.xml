@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<billStatus>
+  <bill>
+    <billNumber>3</billNumber>
+    <createDate>2012-08-29T12:14:24Z</createDate>
+    <updateDate>2021-07-10T16:54:47Z</updateDate>
+    <originChamber>Senate</originChamber>
+    <billType>S</billType>
+    <introducedDate>2007-01-04</introducedDate>
+    <congress>110</congress>
+    <recordedVotes>
+      <recordedVote>
+        <rollNumber>132</rollNumber>
+        <url>http://www.senate.gov/legislative/LIS/roll_call_lists/roll_call_vote_cfm.cfm?&amp;congress=110&amp;session=1&amp;vote=00132</url>
+        <fullActionName>CLOTURE MOTION</fullActionName>
+        <chamber>Senate</chamber>
+        <congress>110</congress>
+        <date>2007-04-18T14:04:41Z</date>
+        <sessionNumber>1</sessionNumber>
+      </recordedVote>
+    </recordedVotes>
+    <committees>
+      <billCommittees>
+        <item>
+          <systemCode>ssfi00</systemCode>
+          <name>Finance Committee</name>
+          <chamber>Senate</chamber>
+          <type>Standing</type>
+          <subcommittees />
+          <activities>
+            <item>
+              <name>Reported by</name>
+              <date>2007-04-13T18:12:58Z</date>
+            </item>
+            <item>
+              <name>Markup by</name>
+              <date>2007-04-12T15:13:41Z</date>
+            </item>
+            <item>
+              <name>Referred to</name>
+              <date>2007-01-04T18:54:46Z</date>
+            </item>
+          </activities>
+        </item>
+      </billCommittees>
+    </committees>
+    <committeeReports />
+    <relatedBills>
+      <item>
+        <latestTitle>Medicare Prescription Drug Price Negotiation Act of 2007</latestTitle>
+        <congress>110</congress>
+        <number>4</number>
+        <type>HR</type>
+        <latestAction>
+          <actionDate>2007-02-28</actionDate>
+          <text>For Previous Action See H.R.4.</text>
+        </latestAction>
+        <relationshipDetails>
+          <item>
+            <type>Related bill</type>
+            <identifiedBy>House</identifiedBy>
+          </item>
+        </relationshipDetails>
+      </item>
+    </relatedBills>
+    <actions>
+      <item>
+        <actionDate>2007-04-18</actionDate>
+        <committees />
+        <links />
+        <sourceSystem>
+          <code>0</code>
+          <name>Senate</name>
+        </sourceSystem>
+        <text>Motion by Senator Reid to reconsider the vote by which cloture on the motion to proceed was not invoked [Record Vote Number 132] entered in Senate.</text>
+        <type>Floor</type>
+      </item>
+      <item>
+        <actionDate>2007-04-18</actionDate>
+        <committees />
+        <links />
+        <sourceSystem>
+          <code>0</code>
+          <name>Senate</name>
+        </sourceSystem>
+        <text>Cloture on the motion to proceed to the bill not invoked in Senate by Yea-Nay Vote. 55 - 42. Record Vote Number: 132. (consideration: CR S4634; text: CR S4634)</text>
+        <type>Floor</type>
+      </item>
+      <item>
+        <actionDate>2007-04-18</actionDate>
+        <committees />
+        <links />
+        <sourceSystem>
+          <code>0</code>
+          <name>Senate</name>
+        </sourceSystem>
+        <text>Motion to proceed to measure considered in Senate. (consideration: CR S4634-4636)</text>
+        <type>Floor</type>
+      </item>
+      <item>
+        <actionDate>2007-04-16</actionDate>
+        <committees />
+        <links />
+        <sourceSystem>
+          <code>0</code>
+          <name>Senate</name>
+        </sourceSystem>
+        <text>Motion to proceed to consideration of measure withdrawn in Senate. (consideration: CR S4461)</text>
+        <type>Floor</type>
+      </item>
+      <item>
+        <actionDate>2007-04-16</actionDate>
+        <committees />
+        <links />
+        <sourceSystem>
+          <code>0</code>
+          <name>Senate</name>
+        </sourceSystem>
+        <text>Cloture motion on the motion to proceed presented in Senate. (consideration: CR S4461; text: CR S4461)</text>
+        <type>Floor</type>
+      </item>
+      <item>
+        <actionDate>2007-04-16</actionDate>
+        <committees />
+        <links />
+        <sourceSystem>
+          <code>0</code>
+          <name>Senate</name>
+        </sourceSystem>
+        <text>Motion to proceed to consideration of measure made in Senate. (consideration: CR S4461)</text>
+        <type>Floor</type>
+      </item>
+      <item>
+        <actionDate>2007-04-13</actionDate>
+        <committees />
+        <links />
+        <sourceSystem>
+          <code>0</code>
+          <name>Senate</name>
+        </sourceSystem>
+        <text>Placed on Senate Legislative Calendar under General Orders. Calendar No. 118.</text>
+        <type>Calendars</type>
+      </item>
+      <item>
+        <actionDate>2007-04-13</actionDate>
+        <committees>
+          <item>
+            <systemCode>ssfi00</systemCode>
+            <name>Finance Committee</name>
+          </item>
+        </committees>
+        <links />
+        <sourceSystem>
+          <code>0</code>
+          <name>Senate</name>
+        </sourceSystem>
+        <text>Committee on Finance. Reported by Senator Baucus under authority of the order of the Senate of 04/12/2007 with an amendment in the nature of a substitute. Without written report.</text>
+        <type>Committee</type>
+      </item>
+      <item>
+        <actionDate>2007-04-13</actionDate>
+        <links />
+        <text>Committee on Finance. Reported by Senator Baucus under authority of the order of the Senate of 04/12/2007 with an amendment in the nature of a substitute. Without written report.</text>
+        <type>Committee</type>
+        <actionCode>14000</actionCode>
+        <sourceSystem>
+          <code>9</code>
+          <name>Library of Congress</name>
+        </sourceSystem>
+        <committees>
+          <item>
+            <systemCode>ssfi00</systemCode>
+            <name>Finance Committee</name>
+          </item>
+        </committees>
+      </item>
+      <item>
+        <actionDate>2007-04-12</actionDate>
+        <committees>
+          <item>
+            <systemCode>ssfi00</systemCode>
+            <name>Finance Committee</name>
+          </item>
+        </committees>
+        <links />
+        <sourceSystem>
+          <code>0</code>
+          <name>Senate</name>
+        </sourceSystem>
+        <text>Committee on Finance. Ordered to be reported with an amendment in the nature of a substitute favorably.</text>
+        <type>Committee</type>
+      </item>
+      <item>
+        <actionDate>2007-01-04</actionDate>
+        <committees>
+          <item>
+            <systemCode>ssfi00</systemCode>
+            <name>Finance Committee</name>
+          </item>
+        </committees>
+        <links />
+        <sourceSystem>
+          <code>0</code>
+          <name>Senate</name>
+        </sourceSystem>
+        <text>Read twice and referred to the Committee on Finance. (text of measure as introduced: CR S48)</text>
+        <type>IntroReferral</type>
+      </item>
+      <item>
+        <actionDate>2007-01-04</actionDate>
+        <links />
+        <text>Sponsor introductory remarks on measure. (CR S9-11)</text>
+        <type>IntroReferral</type>
+        <actionCode>B00100</actionCode>
+        <sourceSystem>
+          <code>9</code>
+          <name>Library of Congress</name>
+        </sourceSystem>
+        <committees />
+      </item>
+      <item>
+        <actionDate>2007-01-04</actionDate>
+        <links />
+        <text>Introduced in Senate</text>
+        <type>IntroReferral</type>
+        <actionCode>10000</actionCode>
+        <sourceSystem>
+          <code>9</code>
+          <name>Library of Congress</name>
+        </sourceSystem>
+        <committees />
+      </item>
+      <actionTypeCounts>
+        <motionToReconsider>1</motionToReconsider>
+        <clotureMotion>1</clotureMotion>
+        <motionToProceedConsidered>1</motionToProceedConsidered>
+        <motionToConsider>2</motionToConsider>
+        <clotureMotionPresented>1</clotureMotionPresented>
+        <placedOnCalendarGeneralOrders>1</placedOnCalendarGeneralOrders>
+        <reportedToSenate>2</reportedToSenate>
+        <orderedReported>1</orderedReported>
+        <referredToCommittee>1</referredToCommittee>
+        <placeholderTextForB>1</placeholderTextForB>
+        <introducedInSenate>1</introducedInSenate>
+      </actionTypeCounts>
+      <actionByCounts>
+        <senate>12</senate>
+      </actionByCounts>
+    </actions>
+    <sponsors>
+      <item>
+        <bioguideId>R000146</bioguideId>
+        <fullName>Sen. Reid, Harry [D-NV]</fullName>
+        <firstName>HARRY</firstName>
+        <middleName>M.</middleName>
+        <lastName>REID</lastName>
+        <party>D</party>
+        <state>NV</state>
+        <identifiers>
+          <lisID>952</lisID>
+          <bioguideId>R000146</bioguideId>
+          <gpoId>8271</gpoId>
+        </identifiers>
+        <byRequestType />
+      </item>
+    </sponsors>
+    <cosponsors>
+      <item>
+        <bioguideId>B000243</bioguideId>
+        <fullName>Sen. Baucus, Max [D-MT]</fullName>
+        <firstName>MAX</firstName>
+        <middleName>SIEBEN</middleName>
+        <lastName>BAUCUS</lastName>
+        <party>D</party>
+        <state>MT</state>
+        <identifiers>
+          <lisID>66</lisID>
+          <bioguideId>B000243</bioguideId>
+          <gpoId>8298</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-04</sponsorshipDate>
+        <isOriginalCosponsor>True</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>L000174</bioguideId>
+        <fullName>Sen. Leahy, Patrick J. [D-VT]</fullName>
+        <firstName>PATRICK</firstName>
+        <middleName>JOSEPH</middleName>
+        <lastName>LEAHY</lastName>
+        <party>D</party>
+        <state>VT</state>
+        <identifiers>
+          <lisID>1383</lisID>
+          <bioguideId>L000174</bioguideId>
+          <gpoId>8244</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-04</sponsorshipDate>
+        <isOriginalCosponsor>True</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>M000702</bioguideId>
+        <fullName>Sen. Mikulski, Barbara A. [D-MD]</fullName>
+        <firstName>BARBARA</firstName>
+        <middleName>ANN</middleName>
+        <lastName>MIKULSKI</lastName>
+        <party>D</party>
+        <state>MD</state>
+        <identifiers>
+          <lisID>802</lisID>
+          <bioguideId>M000702</bioguideId>
+          <gpoId>8240</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-04</sponsorshipDate>
+        <isOriginalCosponsor>True</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>S000148</bioguideId>
+        <fullName>Sen. Schumer, Charles E. [D-NY]</fullName>
+        <firstName>CHARLES</firstName>
+        <middleName>E.</middleName>
+        <lastName>SCHUMER</lastName>
+        <party>D</party>
+        <state>NY</state>
+        <identifiers>
+          <lisID>1036</lisID>
+          <bioguideId>S000148</bioguideId>
+          <gpoId>8279</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-04</sponsorshipDate>
+        <isOriginalCosponsor>True</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>C001041</bioguideId>
+        <fullName>Sen. Clinton, Hillary Rodham [D-NY]</fullName>
+        <firstName>HILLARY</firstName>
+        <middleName>R</middleName>
+        <lastName>CLINTON</lastName>
+        <party>D</party>
+        <state>NY</state>
+        <identifiers>
+          <lisID>1631</lisID>
+          <bioguideId>C001041</bioguideId>
+          <gpoId>5804</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-04</sponsorshipDate>
+        <isOriginalCosponsor>True</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>C000127</bioguideId>
+        <fullName>Sen. Cantwell, Maria [D-WA]</fullName>
+        <firstName>MARIA</firstName>
+        <middleName />
+        <lastName>CANTWELL</lastName>
+        <party>D</party>
+        <state>WA</state>
+        <identifiers>
+          <lisID>172</lisID>
+          <bioguideId>C000127</bioguideId>
+          <gpoId>8288</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-04</sponsorshipDate>
+        <isOriginalCosponsor>True</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>K000305</bioguideId>
+        <fullName>Sen. Kohl, Herb [D-WI]</fullName>
+        <firstName>HERBERT</firstName>
+        <middleName>H.</middleName>
+        <lastName>KOHL</lastName>
+        <party>D</party>
+        <state>WI</state>
+        <identifiers>
+          <lisID>1380</lisID>
+          <bioguideId>K000305</bioguideId>
+          <gpoId>8248</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-04</sponsorshipDate>
+        <isOriginalCosponsor>True</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>S000770</bioguideId>
+        <fullName>Sen. Stabenow, Debbie [D-MI]</fullName>
+        <firstName>DEBORAH</firstName>
+        <middleName>ANN</middleName>
+        <lastName>STABENOW</lastName>
+        <party>D</party>
+        <state>MI</state>
+        <identifiers>
+          <lisID>1531</lisID>
+          <bioguideId>S000770</bioguideId>
+          <gpoId>8261</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-04</sponsorshipDate>
+        <isOriginalCosponsor>True</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>W000803</bioguideId>
+        <fullName>Sen. Webb, Jim [D-VA]</fullName>
+        <firstName>James</firstName>
+        <middleName>H. "Jim"</middleName>
+        <lastName>Webb</lastName>
+        <party>D</party>
+        <state>VA</state>
+        <identifiers>
+          <lisID>1822</lisID>
+          <bioguideId>W000803</bioguideId>
+          <gpoId>8268</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-04</sponsorshipDate>
+        <isOriginalCosponsor>True</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>B000711</bioguideId>
+        <fullName>Sen. Boxer, Barbara [D-CA]</fullName>
+        <firstName>BARBARA</firstName>
+        <middleName />
+        <lastName>BOXER</lastName>
+        <party>D</party>
+        <state>CA</state>
+        <identifiers>
+          <lisID>116</lisID>
+          <bioguideId>B000711</bioguideId>
+          <gpoId>8306</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-04</sponsorshipDate>
+        <isOriginalCosponsor>True</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>B000944</bioguideId>
+        <fullName>Sen. Brown, Sherrod [D-OH]</fullName>
+        <firstName>Sherrod</firstName>
+        <middleName />
+        <lastName>Brown</lastName>
+        <party>D</party>
+        <state>OH</state>
+        <identifiers>
+          <lisID>136</lisID>
+          <bioguideId>B000944</bioguideId>
+          <gpoId>8309</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-11</sponsorshipDate>
+        <isOriginalCosponsor>False</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>K000367</bioguideId>
+        <fullName>Sen. Klobuchar, Amy [D-MN]</fullName>
+        <firstName>Amy</firstName>
+        <middleName />
+        <lastName>Klobuchar</lastName>
+        <party>D</party>
+        <state>MN</state>
+        <identifiers>
+          <lisID>1826</lisID>
+          <bioguideId>K000367</bioguideId>
+          <gpoId>8249</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-01-22</sponsorshipDate>
+        <isOriginalCosponsor>False</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>C001070</bioguideId>
+        <fullName>Sen. Casey, Robert P., Jr. [D-PA]</fullName>
+        <firstName>Bob</firstName>
+        <middleName />
+        <lastName>Casey</lastName>
+        <party>D</party>
+        <state>PA</state>
+        <identifiers>
+          <lisID>1828</lisID>
+          <bioguideId>C001070</bioguideId>
+          <gpoId>8282</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-02-15</sponsorshipDate>
+        <isOriginalCosponsor>False</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>L000261</bioguideId>
+        <fullName>Sen. Levin, Carl [D-MI]</fullName>
+        <firstName>CARL</firstName>
+        <middleName>MILTON</middleName>
+        <lastName>LEVIN</lastName>
+        <party>D</party>
+        <state>MI</state>
+        <identifiers>
+          <lisID>1384</lisID>
+          <bioguideId>L000261</bioguideId>
+          <gpoId>8243</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-02-16</sponsorshipDate>
+        <isOriginalCosponsor>False</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>N000032</bioguideId>
+        <fullName>Sen. Nelson, Bill [D-FL]</fullName>
+        <firstName>CLARENCE</firstName>
+        <middleName>WILLIAM</middleName>
+        <lastName>NELSON</lastName>
+        <party>D</party>
+        <state>FL</state>
+        <identifiers>
+          <lisID>859</lisID>
+          <bioguideId>N000032</bioguideId>
+          <gpoId>8236</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-04-17</sponsorshipDate>
+        <isOriginalCosponsor>False</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>F000061</bioguideId>
+        <fullName>Sen. Feingold, Russell D. [D-WI]</fullName>
+        <firstName>RUSSELL</firstName>
+        <middleName>D.</middleName>
+        <lastName>FEINGOLD</lastName>
+        <party>D</party>
+        <state>WI</state>
+        <identifiers>
+          <lisID>1331</lisID>
+          <bioguideId>F000061</bioguideId>
+          <gpoId>5832</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-04-18</sponsorshipDate>
+        <isOriginalCosponsor>False</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+      <item>
+        <bioguideId>J000177</bioguideId>
+        <fullName>Sen. Johnson, Tim [D-SD]</fullName>
+        <firstName>TIM</firstName>
+        <middleName />
+        <lastName>JOHNSON</lastName>
+        <party>D</party>
+        <state>SD</state>
+        <identifiers>
+          <lisID>604</lisID>
+          <bioguideId>J000177</bioguideId>
+          <gpoId>8319</gpoId>
+        </identifiers>
+        <sponsorshipDate>2007-05-03</sponsorshipDate>
+        <isOriginalCosponsor>False</isOriginalCosponsor>
+        <sponsorshipWithdrawnDate />
+      </item>
+    </cosponsors>
+    <cboCostEstimates>
+      <item>
+        <pubDate>2007-04-16T04:00:00Z</pubDate>
+        <title>S. 3, Medicare Prescription Drug Price Negotiation Act of 2007</title>
+        <url>http://www.cbo.gov/publication/18564</url>
+      </item>
+      <item>
+        <pubDate>2007-04-16T04:00:00Z</pubDate>
+        <title>S. 3, Medicare Prescription Drug Price Negotiation Act of 2007</title>
+        <url>https://www.cbo.gov/publication/18564</url>
+      </item>
+    </cboCostEstimates>
+    <laws />
+    <notes />
+    <policyArea>
+      <name>Health</name>
+    </policyArea>
+    <subjects>
+      <billSubjects>
+        <legislativeSubjects>
+          <item>
+            <name>Congress</name>
+          </item>
+          <item>
+            <name>Drugs</name>
+          </item>
+          <item>
+            <name>Legislation</name>
+          </item>
+          <item>
+            <name>Medicare</name>
+          </item>
+          <item>
+            <name>Prescription pricing</name>
+          </item>
+          <item>
+            <name>Social Welfare</name>
+          </item>
+        </legislativeSubjects>
+        <policyArea>
+          <name>Health</name>
+        </policyArea>
+      </billSubjects>
+    </subjects>
+    <summaries>
+      <billSummaries>
+        <item>
+          <versionCode>00</versionCode>
+          <actionDate>2007-01-04</actionDate>
+          <actionDesc>Introduced in Senate</actionDesc>
+          <lastSummaryUpdateDate>2007-01-11T19:54:47Z</lastSummaryUpdateDate>
+          <text><![CDATA[<p>Medicare Prescription Drug Price Negotiation Act of 2007 - Expresses the sense of Congress that Congress should enact, and the President should sign, legislation to amend part D (Voluntary Prescription Drug Benefit Program) of title XVIII (Medicare) of the Social Security Act to provide for fair prescription drug prices for Medicare beneficiaries. </p>]]></text>
+          <updateDate>2007-01-04T05:00:00Z</updateDate>
+          <name>Introduced in Senate</name>
+        </item>
+      </billSummaries>
+    </summaries>
+    <title>Medicare Prescription Drug Price Negotiation Act of 2007</title>
+    <titles>
+      <item>
+        <titleType>Official Title as Introduced</titleType>
+        <parentTitleType />
+        <title>A bill to amend part D of title XVIII of the Social Security Act to provide for fair prescription drug prices for Medicare beneficiaries.</title>
+        <chamberCode />
+        <chamberName />
+      </item>
+      <item>
+        <titleType>Short Titles as Introduced</titleType>
+        <parentTitleType />
+        <title>Medicare Prescription Drug Price Negotiation Act of 2007</title>
+        <chamberCode />
+        <chamberName />
+      </item>
+      <item>
+        <titleType>Display Title</titleType>
+        <parentTitleType />
+        <title>Medicare Prescription Drug Price Negotiation Act of 2007</title>
+        <chamberCode />
+        <chamberName />
+      </item>
+    </titles>
+    <amendments />
+    <textVersions>
+      <item>
+        <type>Reported to Senate</type>
+        <date>2007-04-13T04:00:00Z</date>
+        <formats>
+          <item>
+            <url>https://www.govinfo.gov/content/pkg/BILLS-110s3rs/xml/BILLS-110s3rs.xml</url>
+          </item>
+        </formats>
+      </item>
+      <item>
+        <type>Introduced in Senate</type>
+        <date>2007-01-04T05:00:00Z</date>
+        <formats>
+          <item>
+            <url>https://www.govinfo.gov/content/pkg/BILLS-110s3is/xml/BILLS-110s3is.xml</url>
+          </item>
+        </formats>
+      </item>
+    </textVersions>
+    <latestAction>
+      <actionDate>2007-04-18</actionDate>
+      <text>Motion by Senator Reid to reconsider the vote by which cloture on the motion to proceed was not invoked [Record Vote Number 132] entered in Senate.</text>
+      <links />
+    </latestAction>
+    <calendarNumbers>
+      <item>
+        <calendar>Senate Calendar of Business</calendar>
+        <number>0118</number>
+      </item>
+    </calendarNumbers>
+    <version>1.0.0</version>
+  </bill>
+  <dublinCore xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:format>text/xml</dc:format>
+    <dc:language>EN</dc:language>
+    <dc:rights>Pursuant to Title 17 Section 105 of the United States Code, this file is not subject to copyright protection and is in the public domain.</dc:rights>
+    <dc:contributor>Congressional Research Service, Library of Congress</dc:contributor>
+    <dc:description>This file contains bill summaries and statuses for federal legislation. A bill summary describes the most significant provisions of a piece of legislation and details the effects the legislative text may have on current law and federal programs. Bill summaries are authored by the Congressional Research Service (CRS) of the Library of Congress. As stated in Public Law 91-510 (2 USC 166 (d)(6)), one of the duties of CRS is "to prepare summaries and digests of bills and resolutions of a public general nature introduced in the Senate or House of Representatives". For more information, refer to the User Guide that accompanies this file.</dc:description>
+  </dublinCore>
+</billStatus>
+
