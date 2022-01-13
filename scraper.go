@@ -139,6 +139,7 @@ type BillJSON struct {
 		State    string
 		District string `json:"district,omitempty"`
 	} `json:"cosponsors,omitempty"`
+
 	StatusAt      string `json:"status_at""`
 	ShortTitle    string `json:"short_title"`
 	OfficialTitle string `json:"official_title"`
@@ -262,7 +263,7 @@ func main() {
 
 	// Create db code
 	var expr = fmt.Sprintf("DROP TABLE IF EXISTS bills CASCADE;")
-	print(expr)
+	println(expr)
 	db.Exec(expr)
 	_, err := db.NewCreateTable().
 		Model((*Bill)(nil)).
@@ -276,16 +277,23 @@ func main() {
 	for _, i := range Tables {
 		var expr = fmt.Sprintf("CREATE TABLE bills_t%s PARTITION OF bills FOR VALUES in ('%s');", i, i)
 		var expr2 = fmt.Sprintf("CREATE INDEX ON bills_t%s ('bill_type');", i)
-		print(expr)
+		println(expr)
 		db.Exec(expr)
+		println(expr2)
 		db.Exec(expr2)
+		var expr3 = fmt.Sprintf("ALTER TABLE bills ADD COLUMN %s_ts tsvector GENERATED ALWAYS AS (to_tsvector('english', coalesce(short_title,'') || ' ' || coalesce(summary,''))) STORED;", i)
+		var expr4 = fmt.Sprintf("CREATE INDEX bill_ts_idx ON bills USING GIN (%s_ts);", i)
+		println(expr3)
+		db.Exec(expr3)
+		println(expr4)
+		db.Exec(expr4)
 	}
 
 	var wg sync.WaitGroup
-	sem := make(chan struct{}, 128)
+	sem := make(chan struct{}, 16)
 	for i := 93; i <= 117; i++ {
 		for _, table := range Tables {
-			files, err := ioutil.ReadDir(fmt.Sprintf("../../congress/data/%s/bills/%s", strconv.Itoa(i), table))
+			files, err := ioutil.ReadDir(fmt.Sprintf("../congress_api/scraper/congress/data/%s/bills/%s", strconv.Itoa(i), table))
 			if err != nil {
 				debug.PrintStack()
 				continue
@@ -295,7 +303,7 @@ func main() {
 			wg.Add(len(files))
 			println(len(files))
 			for _, f := range files {
-				path := fmt.Sprintf("../../congress/data/%s/bills/%s/", strconv.Itoa(i), table) + f.Name()
+				path := fmt.Sprintf("../congress_api/scraper/congress/data/%s/bills/%s/", strconv.Itoa(i), table) + f.Name()
 				var xmlcheck = path + "/fdsys_billstatus.xml"
 				if _, err := os.Stat(xmlcheck); err == nil {
 					go func() {
