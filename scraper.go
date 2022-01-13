@@ -146,40 +146,36 @@ type BillJSON struct {
 
 func parse_bill(path string) *BillJSON {
 	jsonFile, err := os.Open(path)
-	// if wei os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer jsonFile.Close()
 
-	// read our opened xmlFile as a byte array.
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	var billjs BillJSON
+
 	json.Unmarshal(byteValue, &billjs)
-	// fmt.Println(billjs.Congress + " json")
 	return &billjs
 
 }
+
 func parse_bill_xml(path string) *Bill {
 	xmlFile, err := os.Open(path)
-	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	byteValue, _ := ioutil.ReadAll(xmlFile)
-
-	// we initialize our Users array
 	var billxml BillXMLRoot
-	// we unmarshal our byteArray which contains our
-	// xmlFiles content into 'users' which we defined above
 	xml.Unmarshal(byteValue, &billxml)
+
 	var action_structs []struct {
 		ActedAt string
 		Text    string
 		Type    string
 	}
 
+	// Create structs with same hiearchy as billJSON, so that data is uniform when inserted into postgreSQL
 	for _, action := range billxml.BillXML.Actions.Actions {
 		action_structs = append(action_structs, struct {
 			ActedAt string
@@ -240,6 +236,8 @@ func parse_bill_xml(path string) *Bill {
 		Date: Date,
 		Text: Text,
 	}
+
+	// Create Bill Struct, same fields as BillJSON
 	var bill = Bill{
 		Number:        billxml.BillXML.Number,
 		BillType:      strings.ToLower(billxml.BillXML.BillType),
@@ -253,13 +251,12 @@ func parse_bill_xml(path string) *Bill {
 		ShortTitle:    billxml.BillXML.ShortTitle,
 		OfficialTitle: billxml.BillXML.ShortTitle,
 	}
-	// fmt.Println(bill.Congress + " xml")
 	return &bill
 }
 func main() {
+
 	ctx := context.Background()
 	dsn := "postgres://postgres:postgres@localhost:5432/csearch?sslmode=disable"
-	// dsn := "unix://user:pass@dbname/var/run/postgresql/.s.PGSQL.5431"
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
 
