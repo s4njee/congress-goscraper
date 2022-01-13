@@ -145,7 +145,7 @@ type BillJSON struct {
 	OfficialTitle string `json:"official_title"`
 }
 
-func parse_bill(path string) *BillJSON {
+func parse_bill(path string, db *bun.DB) *BillJSON {
 	jsonFile, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
@@ -156,15 +156,23 @@ func parse_bill(path string) *BillJSON {
 	var billjs BillJSON
 
 	json.Unmarshal(byteValue, &billjs)
+	//ctx := context.Background()
+	//_, err = db.NewInsert().Model(&billjs).Exec(ctx)
+	//if err != nil {
+	//	panic(err)
+	//} else {
+	//	fmt.Printf("Congress: %s Bill: %s-%s\n", billjs.Congress, billjs.BillType, billjs.Number)
+	//}
 	return &billjs
 
 }
 
-func parse_bill_xml(path string) *Bill {
+func parse_bill_xml(path string, db *bun.DB) *Bill {
 	xmlFile, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
 	}
+	defer xmlFile.Close()
 
 	byteValue, _ := ioutil.ReadAll(xmlFile)
 	var billxml BillXMLRoot
@@ -252,12 +260,19 @@ func parse_bill_xml(path string) *Bill {
 		ShortTitle:    billxml.BillXML.ShortTitle,
 		OfficialTitle: billxml.BillXML.ShortTitle,
 	}
+	//ctx := context.Background()
+	//_, err = db.NewInsert().Model(&bill).Exec(ctx)
+	//if err != nil {
+	//	panic(err)
+	//} else {
+	//	fmt.Printf("Congress: %s Bill: %s-%s\n", bill.Congress, bill.BillType, bill.Number)
+	//}
 	return &bill
 }
 func main() {
 
 	ctx := context.Background()
-	dsn := "postgres://postgres:postgres@localhost:5432/csearch?sslmode=disable"
+	dsn := "postgres://postgres:postgres@localhost:5432/csearch?sslmode=disable&timeout=600s"
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
 
@@ -281,16 +296,22 @@ func main() {
 		db.Exec(expr)
 		println(expr2)
 		db.Exec(expr2)
-		var expr3 = fmt.Sprintf("ALTER TABLE bills ADD COLUMN %s_ts tsvector GENERATED ALWAYS AS (to_tsvector('english', coalesce(short_title,'') || ' ' || coalesce(summary,''))) STORED;", i)
-		var expr4 = fmt.Sprintf("CREATE INDEX bill_ts_idx ON bills USING GIN (%s_ts);", i)
+		var expr3 = fmt.Sprintf("ALTER TABLE bills ADD COLUMN %s_ts tsvector GENERATED ALWAYS AS (to_tsvector('english', coalesce(short_title,'') || ' ' || coalesce(summary->>'Text',''))) STORED;", i)
+		var expr4 = fmt.Sprintf("CREATE INDEX %s_ts_idx ON bills USING GIN (%s_ts);", i, i)
 		println(expr3)
-		db.Exec(expr3)
+		_, err = db.Exec(expr3)
+		if err != nil {
+			panic(err)
+		}
 		println(expr4)
-		db.Exec(expr4)
+		_, err = db.Exec(expr4)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	var wg sync.WaitGroup
-	sem := make(chan struct{}, 16)
+	sem := make(chan struct{}, 64)
 	for i := 93; i <= 117; i++ {
 		for _, table := range Tables {
 			files, err := ioutil.ReadDir(fmt.Sprintf("../congress_api/scraper/congress/data/%s/bills/%s", strconv.Itoa(i), table))
@@ -310,7 +331,8 @@ func main() {
 						defer mutex.Unlock()
 						sem <- struct{}{}
 						mutex.Lock()
-						bills = append(bills, parse_bill_xml(xmlcheck))
+						bills = append(bills, parse_bill_xml(xmlcheck, db))
+						//parse_bill_xml(xmlcheck, db)
 						defer func() { <-sem }()
 						defer wg.Done()
 					}()
@@ -320,7 +342,8 @@ func main() {
 					go func() {
 						defer mutex.Unlock()
 						sem <- struct{}{}
-						var bjs = parse_bill(path)
+						var bjs = parse_bill(path, db)
+						//parse_bill(path, db)
 						// print(bjs.ShortTitle)
 						mutex.Lock()
 						billsJSON = append(billsJSON, bjs)
