@@ -11,6 +11,7 @@ import (
 	"os"
 	"runtime/debug"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/uptrace/bun"
@@ -68,47 +69,47 @@ type CosponsorsXML struct {
 	Cosponsors []SponsorXML `xml:"item"`
 }
 type BillXML struct {
-	bun.BaseModel `bun:"table:bills"`
-	XMLName       xml.Name      `xml:"bill"`
-	Number        string        `xml:"billNumber"`
-	BillType      string        `xml:"billType"`
-	IntroducedAt  string        `xml:"introducedDate"`
-	Congress      string        `xml:"congress"`
-	Summary       XMLSummaries  `xml:"summaries"`
-	Actions       ActionsXML    `xml:"actions"`
-	Sponsors      SponsorsXML   `xml:"sponsors"`
-	Cosponsors    CosponsorsXML `xml:"cosponsors"`
-	ShortTitle    string        `xml:"title"`
+	XMLName      xml.Name      `xml:"bill"`
+	Number       string        `xml:"billNumber"`
+	BillType     string        `xml:"billType"`
+	IntroducedAt string        `xml:"introducedDate"`
+	Congress     string        `xml:"congress"`
+	Summary      XMLSummaries  `xml:"summaries"`
+	Actions      ActionsXML    `xml:"actions"`
+	Sponsors     SponsorsXML   `xml:"sponsors"`
+	Cosponsors   CosponsorsXML `xml:"cosponsors"`
+	ShortTitle   string        `xml:"title"`
 }
 type Bill struct {
-	Number       string
-	BillType     string
-	IntroducedAt string
-	Congress     string
-	Summary      struct {
+	bun.BaseModel `bun:"table:bills"`
+	Number        string `bun:",pk"`
+	BillType      string `json:"bill_type" bun:",pk"`
+	IntroducedAt  string `json:"introduced_at"`
+	Congress      string `bun:",pk"`
+	Summary       struct {
 		Date string
 		Text string
-	} `json:"omitempty"`
+	} `json:"summary,omitempty"`
 	Actions []struct {
 		ActedAt string
 		Text    string
 		Type    string
-	} `json:"omitempty"`
+	} `json:"actions,omitempty"`
 	Sponsors []struct {
 		Title    string `json:"omitempty"`
 		Name     string
 		State    string
 		District string `json:"omitempty"`
-	} `json:"omitempty"`
+	} `json:"sponsors,omitempty"`
 	Cosponsors []struct {
 		Title    string `json:"omitempty"`
 		Name     string
 		State    string
 		District string `json:"omitempty"`
-	} `json:"omitempty"`
-	StatusAt      string
-	ShortTitle    string
-	OfficialTitle string
+	} `json:"cosponsors,omitempty"`
+	StatusAt      string `json:"status_at""`
+	ShortTitle    string `json:"short_title"`
+	OfficialTitle string `json:"official_title"`
 }
 
 type BillJSON struct {
@@ -120,7 +121,7 @@ type BillJSON struct {
 	Summary       struct {
 		Date string
 		Text string
-	} `json:"actions,omitempty"`
+	} `json:"summary,omitempty"`
 	Actions []struct {
 		ActedAt string `json:"acted_at"`
 		Text    string
@@ -143,7 +144,7 @@ type BillJSON struct {
 	OfficialTitle string `json:"official_title"`
 }
 
-func parse_bill(path string) BillJSON {
+func parse_bill(path string) *BillJSON {
 	jsonFile, err := os.Open(path)
 	// if wei os.Open returns an error then handle it
 	if err != nil {
@@ -155,10 +156,11 @@ func parse_bill(path string) BillJSON {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	var billjs BillJSON
 	json.Unmarshal(byteValue, &billjs)
-	return billjs
+	// fmt.Println(billjs.Congress + " json")
+	return &billjs
 
 }
-func parse_bill_xml(path string) Bill {
+func parse_bill_xml(path string) *Bill {
 	xmlFile, err := os.Open(path)
 	// if we os.Open returns an error then handle it
 	if err != nil {
@@ -225,18 +227,25 @@ func parse_bill_xml(path string) Bill {
 			State: cosponsor.State,
 		})
 	}
-	bill := Bill{
-		Number:       billxml.BillXML.Number,
-		BillType:     billxml.BillXML.BillType,
-		IntroducedAt: billxml.BillXML.IntroducedAt,
-		Congress:     billxml.BillXML.Congress,
-		Summary: struct {
-			Date string
-			Text string
-		}{
-			Date: billxml.BillXML.Summary.XMLBillSummaries.XMLBillItems[0].Date,
-			Text: billxml.BillXML.Summary.XMLBillSummaries.XMLBillItems[0].Text,
-		},
+	var Date string
+	var Text string
+	if billxml.BillXML.Summary.XMLBillSummaries.XMLBillItems != nil {
+		Date = billxml.BillXML.Summary.XMLBillSummaries.XMLBillItems[0].Date
+		Text = billxml.BillXML.Summary.XMLBillSummaries.XMLBillItems[0].Text
+	}
+	summary := struct {
+		Date string
+		Text string
+	}{
+		Date: Date,
+		Text: Text,
+	}
+	var bill = Bill{
+		Number:        billxml.BillXML.Number,
+		BillType:      strings.ToLower(billxml.BillXML.BillType),
+		IntroducedAt:  billxml.BillXML.IntroducedAt,
+		Congress:      billxml.BillXML.Congress,
+		Summary:       summary,
 		Actions:       action_structs,
 		Sponsors:      sponsor_structs,
 		Cosponsors:    cosponsor_structs,
@@ -244,29 +253,39 @@ func parse_bill_xml(path string) Bill {
 		ShortTitle:    billxml.BillXML.ShortTitle,
 		OfficialTitle: billxml.BillXML.ShortTitle,
 	}
-	return bill
+	// fmt.Println(bill.Congress + " xml")
+	return &bill
 }
 func main() {
 	ctx := context.Background()
-	dsn := "postgres://postgres:postgres@db:5432/csearch?sslmode=disable"
+	dsn := "postgres://postgres:postgres@localhost:5432/csearch?sslmode=disable"
 	// dsn := "unix://user:pass@dbname/var/run/postgresql/.s.PGSQL.5431"
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
-	// _, err := db.NewCreateTable().
-	// 	Model((*Bill)(nil)).
-	// 	PartitionBy("LIST (bill_type)").
-	// 	Exec(ctx)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 
-	// for _, i := range Tables {
-	// 	var expr = fmt.Sprintf("CREATE TABLE bills_t%s PARTITION OF bills FOR VALUES in ('%s');", i, i)
-	// 	print(expr)
-	// 	db.Exec(expr)
-	// }
+	// Create db code
+	var expr = fmt.Sprintf("DROP TABLE IF EXISTS bills CASCADE;")
+	print(expr)
+	db.Exec(expr)
+	_, err := db.NewCreateTable().
+		Model((*Bill)(nil)).
+		PartitionBy("LIST (bill_type)").
+		Exec(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	// Create db partitions
+	for _, i := range Tables {
+		var expr = fmt.Sprintf("CREATE TABLE bills_t%s PARTITION OF bills FOR VALUES in ('%s');", i, i)
+		var expr2 = fmt.Sprintf("CREATE INDEX ON bills_t%s ('bill_type');", i)
+		print(expr)
+		db.Exec(expr)
+		db.Exec(expr2)
+	}
+
 	var wg sync.WaitGroup
-	sem := make(chan struct{}, 16)
+	sem := make(chan struct{}, 128)
 	for i := 93; i <= 117; i++ {
 		for _, table := range Tables {
 			files, err := ioutil.ReadDir(fmt.Sprintf("../../congress/data/%s/bills/%s", strconv.Itoa(i), table))
@@ -274,8 +293,8 @@ func main() {
 				debug.PrintStack()
 				continue
 			}
-			var bills []Bill
-			var billsJSON []BillJSON
+			var bills []*Bill
+			var billsJSON []*BillJSON
 			wg.Add(len(files))
 			println(len(files))
 			for _, f := range files {
@@ -283,6 +302,7 @@ func main() {
 				var xmlcheck = path + "/fdsys_billstatus.xml"
 				if _, err := os.Stat(xmlcheck); err == nil {
 					go func() {
+						defer mutex.Unlock()
 						sem <- struct{}{}
 						mutex.Lock()
 						bills = append(bills, parse_bill_xml(xmlcheck))
@@ -293,9 +313,10 @@ func main() {
 				} else if errors.Is(err, os.ErrNotExist) {
 					path += "/data.json"
 					go func() {
+						defer mutex.Unlock()
 						sem <- struct{}{}
 						var bjs = parse_bill(path)
-						print(bjs.ShortTitle)
+						// print(bjs.ShortTitle)
 						mutex.Lock()
 						billsJSON = append(billsJSON, bjs)
 						defer func() { <-sem }()
@@ -305,12 +326,24 @@ func main() {
 
 			}
 			wg.Wait()
-			db.NewInsert().Model(&bills).Exec(ctx)
-			db.NewInsert().Model(&billsJSON).Exec(ctx)
-			// for _, bill := range bills {
-			// 	db.NewInsert().Model(bill).Exec(ctx)
-			// 	//fmt.Printf("Processed %s %s-%s", bill.Congress, bill.BillType, bill.Number)
-			// }
+
+			if len(bills) > 0 {
+				res, err := db.NewInsert().Model(&bills).Exec(ctx)
+				fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
+				if err != nil {
+					panic(err)
+				} else {
+					fmt.Println(res)
+				}
+			} else if len(billsJSON) > 0 {
+				res, err := db.NewInsert().Model(&billsJSON).Exec(ctx)
+				fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(billsJSON)))
+				if err != nil {
+					panic(err)
+				} else {
+					fmt.Println(res)
+				}
+			}
 		}
 	}
 	close(sem)
