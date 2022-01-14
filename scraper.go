@@ -84,6 +84,7 @@ type BillXML struct {
 }
 type Bill struct {
 	bun.BaseModel `bun:"table:bills"`
+	BillID        string
 	Number        string `bun:",pk"`
 	BillType      string `json:"bill_type" bun:",pk"`
 	IntroducedAt  string `json:"introduced_at"`
@@ -218,10 +219,11 @@ func parse_bill(path string, db *bun.DB) *Bill {
 			State: cosponsor.State,
 		})
 	}
-
+	billID := fmt.Sprintf("%s-%s-%s", billjs.Congress, billjs.BillType, billjs.Number)
 	// Create Bill Struct, same fields as BillJSON
 	var bill = Bill{
 		Number:        billjs.Number,
+		BillID:        billID,
 		BillType:      strings.ToLower(billjs.BillType),
 		IntroducedAt:  billjs.IntroducedAt,
 		Congress:      billjs.Congress,
@@ -319,10 +321,12 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 		Date: Date,
 		Text: Text,
 	}
+	billID := fmt.Sprintf("%s-%s-%s", billxml.BillXML.Congress, billxml.BillXML.BillType, billxml.BillXML.Number)
 
 	// Create Bill Struct, same fields as BillJSON
 	var bill = Bill{
 		Number:        billxml.BillXML.Number,
+		BillID:        billID,
 		BillType:      strings.ToLower(billxml.BillXML.BillType),
 		IntroducedAt:  billxml.BillXML.IntroducedAt,
 		Congress:      billxml.BillXML.Congress,
