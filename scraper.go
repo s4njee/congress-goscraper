@@ -86,7 +86,7 @@ type Bill struct {
 	bun.BaseModel `bun:"table:bills"`
 	BillID        string `bun:",pk"`
 	Number        string
-	BillType      string `json:"bill_type"`
+	BillType      string `json:"bill_type" bun:",pk"`
 	IntroducedAt  string `json:"introduced_at"`
 	Congress      string
 	Summary       struct {
