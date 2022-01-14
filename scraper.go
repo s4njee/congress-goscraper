@@ -83,7 +83,7 @@ type BillXML struct {
 	ShortTitle   string        `xml:"title"`
 }
 type Bill struct {
-	bun.BaseModel `bun:"table:bills"`
+	bun.BaseModel `bun:"table:bills_temp"`
 	Number        string `bun:",pk"`
 	BillType      string `json:"bill_type" bun:",pk"`
 	IntroducedAt  string `json:"introduced_at"`
@@ -117,7 +117,7 @@ type Bill struct {
 }
 
 type BillJSON struct {
-	bun.BaseModel `bun:"table:bills"`
+	bun.BaseModel `bun:"table:bills_temp"`
 	Number        string
 	BillType      string `json:"bill_type"`
 	IntroducedAt  string `json:"introduced_at"`
@@ -285,7 +285,7 @@ func main() {
 	db := bun.NewDB(sqldb, pgdialect.New())
 
 	// Create db code
-	var expr = fmt.Sprintf("DROP TABLE IF EXISTS bills CASCADE;")
+	var expr = fmt.Sprintf("DROP TABLE IF EXISTS bills_temp CASCADE;")
 	println(expr)
 	db.Exec(expr)
 	_, err := db.NewCreateTable().
@@ -383,4 +383,10 @@ func main() {
 		}
 	}
 	close(sem)
+	expr = fmt.Sprintf("DROP TABLE IF EXISTS bills CASCADE;")
+	println(expr)
+	db.Exec(expr)
+	expr = fmt.Sprintf("ALTER TABLE bills_temp RENAME TO bills;")
+	println(expr)
+	db.Exec(expr)
 }
