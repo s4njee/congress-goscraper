@@ -83,7 +83,7 @@ type BillXML struct {
 	ShortTitle   string        `xml:"title"`
 }
 type Bill struct {
-	bun.BaseModel `bun:"table:bills_temp"`
+	bun.BaseModel `bun:"table:bills"`
 	Number        string `bun:",pk"`
 	BillType      string `json:"bill_type" bun:",pk"`
 	IntroducedAt  string `json:"introduced_at"`
@@ -222,7 +222,7 @@ func parse_bill(path string, db *bun.DB) *Bill {
 	// Create Bill Struct, same fields as BillJSON
 	var bill = Bill{
 		Number:        billjs.Number,
-		BillType:      billjs.BillType,
+		BillType:      strings.ToLower(billjs.BillType),
 		IntroducedAt:  billjs.IntroducedAt,
 		Congress:      billjs.Congress,
 		Summary:       billjs.Summary,
@@ -344,7 +344,7 @@ func main() {
 	db := bun.NewDB(sqldb, pgdialect.New())
 
 	// Create db code
-	var expr = fmt.Sprintf("DROP TABLE IF EXISTS bills_temp CASCADE;")
+	var expr = fmt.Sprintf("DROP TABLE IF EXISTS bills CASCADE;")
 	println(expr)
 	db.Exec(expr)
 	_, err := db.NewCreateTable().
@@ -357,16 +357,22 @@ func main() {
 
 	// Create db partitions
 	for _, i := range Tables {
-		var expr = fmt.Sprintf("CREATE TABLE bills_t%s PARTITION OF bills_temp FOR VALUES in ('%s');", i, i)
+		var expr = fmt.Sprintf("CREATE TABLE bills_t%s PARTITION OF bills FOR VALUES in ('%s');", i, i)
+
 		var expr2 = fmt.Sprintf("CREATE INDEX ON bills_t%s ('bill_type');", i)
 		println(expr)
 		db.Exec(expr)
 		println(expr2)
 		db.Exec(expr2)
-		var expr3 = fmt.Sprintf("ALTER TABLE bills_temp ADD COLUMN %s_ts tsvector GENERATED ALWAYS AS (to_tsvector('english', coalesce(short_title,'') || ' ' || coalesce(summary->>'Text',''))) STORED;", i)
-		var expr4 = fmt.Sprintf("CREATE INDEX %s_ts_idx ON bills_temp USING GIN (%s_ts);", i, i)
+		var expr3 = fmt.Sprintf("ALTER TABLE bills ADD COLUMN %s_ts tsvector GENERATED ALWAYS AS (to_tsvector('english', coalesce(short_title,'') || ' ' || coalesce(summary->>'Text',''))) STORED;", i)
+		var dropindex = fmt.Sprintf("DROP INDEX  IF EXISTS %s_ts_idx CASCADE", i)
+		var expr4 = fmt.Sprintf("CREATE INDEX %s_ts_idx ON bills USING GIN (%s_ts);", i, i)
 		println(expr3)
 		_, err = db.Exec(expr3)
+		if err != nil {
+			panic(err)
+		}
+		_, err = db.Exec(dropindex)
 		if err != nil {
 			panic(err)
 		}
