@@ -443,10 +443,6 @@ func main() {
 		}
 	}
 	close(sem)
-	expr = fmt.Sprintf("DROP TABLE IF EXISTS bills CASCADE;")
-	println(expr)
-	db.Exec(expr)
-	expr = fmt.Sprintf("ALTER TABLE bills_temp RENAME TO bills;")
-	println(expr)
+
 	db.Exec(expr)
 }
