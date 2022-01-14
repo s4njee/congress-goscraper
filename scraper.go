@@ -149,7 +149,7 @@ type BillJSON struct {
 	OfficialTitle string `json:"official_title"`
 }
 
-func parse_bill(path string, db *bun.DB) *BillJSON {
+func parse_bill(path string, db *bun.DB) *Bill {
 	jsonFile, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
@@ -160,14 +160,80 @@ func parse_bill(path string, db *bun.DB) *BillJSON {
 	var billjs BillJSON
 
 	json.Unmarshal(byteValue, &billjs)
-	//ctx := context.Background()
-	//_, err = db.NewInsert().Model(&billjs).Exec(ctx)
-	//if err != nil {
-	//	panic(err)
-	//} else {
-	//	fmt.Printf("Congress: %s Bill: %s-%s\n", billjs.Congress, billjs.BillType, billjs.Number)
-	//}
-	return &billjs
+
+	var action_structs []struct {
+		ActedAt string
+		Text    string
+		Type    string
+	}
+
+	for _, action := range billjs.Actions {
+		action_structs = append(action_structs, struct {
+			ActedAt string
+			Text    string
+			Type    string
+		}{
+			ActedAt: action.ActedAt,
+			Text:    action.Text,
+			Type:    action.Type,
+		})
+	}
+	var sponsor_structs []struct {
+		Title    string `json:"omitempty"`
+		Name     string
+		State    string
+		District string `json:"omitempty"`
+		Party    string `json:"omitempty"`
+	}
+
+	for _, sponsor := range billjs.Sponsors {
+		sponsor_structs = append(sponsor_structs, struct {
+			Title    string `json:"omitempty"`
+			Name     string
+			State    string
+			District string `json:"omitempty"`
+			Party    string `json:"omitempty"`
+		}{
+			Name:  fmt.Sprintf("%s %s [%s]", sponsor.Title, sponsor.Name, sponsor.State),
+			State: sponsor.State,
+		})
+	}
+	var cosponsor_structs []struct {
+		Title    string `json:"omitempty"`
+		Name     string
+		State    string
+		District string `json:"omitempty"`
+		Party    string `json:"omitempty"`
+	}
+
+	for _, cosponsor := range billjs.Cosponsors {
+		cosponsor_structs = append(cosponsor_structs, struct {
+			Title    string `json:"omitempty"`
+			Name     string
+			State    string
+			District string `json:"omitempty"`
+			Party    string `json:"omitempty"`
+		}{
+			Name:  fmt.Sprintf("%s %s [%s]", cosponsor.Title, cosponsor.Name, cosponsor.State),
+			State: cosponsor.State,
+		})
+	}
+
+	// Create Bill Struct, same fields as BillJSON
+	var bill = Bill{
+		Number:        billjs.Number,
+		BillType:      billjs.BillType,
+		IntroducedAt:  billjs.IntroducedAt,
+		Congress:      billjs.Congress,
+		Summary:       billjs.Summary,
+		Actions:       action_structs,
+		Sponsors:      sponsor_structs,
+		Cosponsors:    cosponsor_structs,
+		StatusAt:      billjs.StatusAt,
+		ShortTitle:    billjs.ShortTitle,
+		OfficialTitle: billjs.OfficialTitle,
+	}
+	return &bill
 
 }
 
@@ -182,13 +248,13 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 	var billxml BillXMLRoot
 	xml.Unmarshal(byteValue, &billxml)
 
+	// Create structs with same hiearchy as billJSON, so that data is uniform when inserted into postgreSQL
 	var action_structs []struct {
 		ActedAt string
 		Text    string
 		Type    string
 	}
 
-	// Create structs with same hiearchy as billJSON, so that data is uniform when inserted into postgreSQL
 	for _, action := range billxml.BillXML.Actions.Actions {
 		action_structs = append(action_structs, struct {
 			ActedAt string
@@ -268,13 +334,6 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 		ShortTitle:    billxml.BillXML.ShortTitle,
 		OfficialTitle: billxml.BillXML.ShortTitle,
 	}
-	//ctx := context.Background()
-	//_, err = db.NewInsert().Model(&bill).Exec(ctx)
-	//if err != nil {
-	//	panic(err)
-	//} else {
-	//	fmt.Printf("Congress: %s Bill: %s-%s\n", bill.Congress, bill.BillType, bill.Number)
-	//}
 	return &bill
 }
 func main() {
@@ -328,7 +387,6 @@ func main() {
 				continue
 			}
 			var bills []*Bill
-			var billsJSON []*BillJSON
 			wg.Add(len(files))
 			println(len(files))
 			for _, f := range files {
@@ -354,7 +412,7 @@ func main() {
 						//parse_bill(path, db)
 						// print(bjs.ShortTitle)
 						mutex.Lock()
-						billsJSON = append(billsJSON, bjs)
+						bills = append(bills, bjs)
 						defer func() { <-sem }()
 						defer wg.Done()
 					}()
@@ -366,14 +424,6 @@ func main() {
 			if len(bills) > 0 {
 				res, err := db.NewInsert().Model(&bills).Exec(ctx)
 				fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
-				if err != nil {
-					panic(err)
-				} else {
-					fmt.Println(res)
-				}
-			} else if len(billsJSON) > 0 {
-				res, err := db.NewInsert().Model(&billsJSON).Exec(ctx)
-				fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(billsJSON)))
 				if err != nil {
 					panic(err)
 				} else {
