@@ -51,18 +51,20 @@ type ActionsXML struct {
 	Actions []ItemXML `xml:"item"`
 }
 type SponsorXML struct {
-	XMLName xml.Name `xml:"item"`
-	Name    string   `xml:"fullName"`
-	State   string   `xml:"state"`
+	XMLName  xml.Name `xml:"item"`
+	FullName string   `xml:"fullName"`
+	State    string   `xml:"state"`
+	Party    string   `xml:"party"`
 }
 type SponsorsXML struct {
 	XMLName  xml.Name     `xml:"sponsors"`
 	Sponsors []SponsorXML `xml:"item"`
 }
 type CosponsorXML struct {
-	XMLName xml.Name `xml:"item"`
-	Name    string   `xml:"fullName"`
-	State   string   `xml:"state"`
+	XMLName  xml.Name `xml:"item"`
+	FullName string   `xml:"fullName"`
+	State    string   `xml:"state"`
+	Party    string   `xml:"party"`
 }
 type CosponsorsXML struct {
 	XMLName    xml.Name     `xml:"cosponsors"`
@@ -100,12 +102,14 @@ type Bill struct {
 		Name     string
 		State    string
 		District string `json:"omitempty"`
+		Party    string `json:"omitempty"`
 	} `json:"sponsors,omitempty"`
 	Cosponsors []struct {
 		Title    string `json:"omitempty"`
 		Name     string
 		State    string
 		District string `json:"omitempty"`
+		Party    string `json:"omitempty"`
 	} `json:"cosponsors,omitempty"`
 	StatusAt      string `json:"status_at""`
 	ShortTitle    string `json:"short_title"`
@@ -201,6 +205,7 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 		Name     string
 		State    string
 		District string `json:"omitempty"`
+		Party    string `json:"omitempty"`
 	}
 
 	for _, sponsor := range billxml.BillXML.Sponsors.Sponsors {
@@ -209,8 +214,9 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 			Name     string
 			State    string
 			District string `json:"omitempty"`
+			Party    string `json:"omitempty"`
 		}{
-			Name:  sponsor.Name,
+			Name:  sponsor.FullName,
 			State: sponsor.State,
 		})
 	}
@@ -219,6 +225,7 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 		Name     string
 		State    string
 		District string `json:"omitempty"`
+		Party    string `json:"omitempty"`
 	}
 
 	for _, cosponsor := range billxml.BillXML.Cosponsors.Cosponsors {
@@ -227,8 +234,9 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 			Name     string
 			State    string
 			District string `json:"omitempty"`
+			Party    string `json:"omitempty"`
 		}{
-			Name:  cosponsor.Name,
+			Name:  cosponsor.FullName,
 			State: cosponsor.State,
 		})
 	}
