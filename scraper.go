@@ -84,11 +84,11 @@ type BillXML struct {
 }
 type Bill struct {
 	bun.BaseModel `bun:"table:bills"`
-	BillID        string
-	Number        string `bun:",pk"`
-	BillType      string `json:"bill_type" bun:",pk"`
+	BillID        string `bun:",pk"`
+	Number        string
+	BillType      string `json:"bill_type"`
 	IntroducedAt  string `json:"introduced_at"`
-	Congress      string `bun:",pk"`
+	Congress      string
 	Summary       struct {
 		Date string
 		Text string
