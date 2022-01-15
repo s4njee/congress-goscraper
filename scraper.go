@@ -132,13 +132,13 @@ type BillJSON struct {
 		Text    string
 		Type    string
 	} `json:"actions,omitempty"`
-	Sponsors []struct {
+	Sponsor []struct {
 		Title    string `json:"title,omitempty"`
 		Name     string
 		State    string
 		District string `json:"district,omitempty"`
 		Party    string `json:"party,omitempty"`
-	} `json:"sponsors,omitempty"`
+	} `json:"sponsor,omitempty"`
 	Cosponsors []struct {
 		Title    string `json:"title,omitempty"`
 		Name     string
@@ -189,7 +189,7 @@ func parse_bill(path string, db *bun.DB) *Bill {
 		Party    string `json:"omitempty"`
 	}
 
-	for _, sponsor := range billjs.Sponsors {
+	for _, sponsor := range billjs.Sponsor {
 		var Name string
 		if len(sponsor.Title) > 0 {
 			Name = fmt.Sprintf("%s %s [%s]", sponsor.Title, sponsor.Name, sponsor.State)
