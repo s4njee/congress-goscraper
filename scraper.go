@@ -411,7 +411,7 @@ func main() {
 
 	os.Chdir("/congress")
 	// Update Congress Bills
-	cmd := exec.Command("./run govinfo", "--bulkdata=BILLSTATUS")
+	cmd := exec.Command("./run", "govinfo", "--bulkdata=BILLSTATUS")
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		panic(err)
@@ -429,7 +429,7 @@ func main() {
 	cmd.Wait()
 
 	// Latest bills only (if above fails)
-	cmd = exec.Command("run", "govinfo", "--bulkdata=BILLSTATUS", "--congress=117")
+	cmd = exec.Command("./run", "govinfo", "--bulkdata=BILLSTATUS", "--congress=117")
 	stdout, err = cmd.StdoutPipe()
 	if err != nil {
 		panic(err)
