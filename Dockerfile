@@ -1,5 +1,5 @@
 FROM alpine:latest
-RUN apk add go py3-pip
+RUN apk add go py3-pip alpine-sdk libxml2-dev libxslt-dev py3-lxml
 RUN mkdir /app
 WORKDIR /app
 
