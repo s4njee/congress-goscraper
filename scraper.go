@@ -236,7 +236,7 @@ func parse_bill(path string, db *bun.DB) *Bill {
 		OfficialTitle: billjs.OfficialTitle,
 	}
 	ctx := context.Background()
-	res, err := db.NewInsert().Model(&bill).Exec(ctx)
+	_, err = db.NewInsert().Model(&bill).Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -344,7 +344,7 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 		OfficialTitle: billxml.BillXML.ShortTitle,
 	}
 	ctx := context.Background()
-	res, err := db.NewInsert().Model(&bill).Exec(ctx)
+	_, err = db.NewInsert().Model(&bill).Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
