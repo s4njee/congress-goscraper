@@ -235,11 +235,11 @@ func parse_bill(path string, db *bun.DB) *Bill {
 		ShortTitle:    billjs.ShortTitle,
 		OfficialTitle: billjs.OfficialTitle,
 	}
-	ctx := context.Background()
-	_, err = db.NewInsert().Model(&bill).Exec(ctx)
-	if err != nil {
-		panic(err)
-	}
+	// ctx := context.Background()
+	// _, err = db.NewInsert().Model(&bill).Exec(ctx)
+	// if err != nil {
+	// 	panic(err)
+	// }
 	return &bill
 
 }
@@ -353,7 +353,7 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 func main() {
 
 	ctx := context.Background()
-	dsn := "postgres://postgres:postgres@localhost:5432/csearch?sslmode=disable&timeout=600s"
+	dsn := "postgres://postgres:postgres@localhost:5432/csearch?sslmode=disable&timeout=1200s"
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
 
@@ -441,15 +441,15 @@ func main() {
 			}
 			wg.Wait()
 
-			// if len(bills) > 0 {
-			// 	res, err := db.NewInsert().Model(&bills).Exec(ctx)
-			// 	fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
-			// 	if err != nil {
-			// 		panic(err)
-			// 	} else {
-			// 		fmt.Println(res)
-			// 	}
-			// }
+			if len(bills) > 0 {
+				res, err := db.NewInsert().Model(&bills).Exec(ctx)
+				fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
+				if err != nil {
+					panic(err)
+				} else {
+					fmt.Println(res)
+				}
+			}
 		}
 	}
 	close(sem)
