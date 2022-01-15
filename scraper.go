@@ -428,6 +428,24 @@ func main() {
 	go copyOutput(stderr)
 	cmd.Wait()
 
+	// Latest bills only (if above fails)
+	cmd = exec.Command("./run govinfo", "--bulkdata=BILLSTATUS", "--congress=117")
+	stdout, err = cmd.StdoutPipe()
+	if err != nil {
+		panic(err)
+	}
+	stderr, err = cmd.StderrPipe()
+	if err != nil {
+		panic(err)
+	}
+	err = cmd.Start()
+	if err != nil {
+		panic(err)
+	}
+	go copyOutput(stdout)
+	go copyOutput(stderr)
+	cmd.Wait()
+
 	// Process bills 64 at a time
 	var wg sync.WaitGroup
 	sem := make(chan struct{}, 64)
