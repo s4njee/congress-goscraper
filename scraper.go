@@ -388,7 +388,7 @@ func main() {
 	// Create db partitions
 	for _, i := range Tables {
 		var expr = fmt.Sprintf("CREATE TABLE bills_%s PARTITION OF bills FOR VALUES in ('%s');", i, i)
-		var expr2 = fmt.Sprintf("CREATE INDEX ON bills_%s ('bill_type');", i)
+		var expr2 = fmt.Sprintf("CREATE INDEX ON bills_%s (bill_type);", i)
 		println(expr)
 		db.Exec(expr)
 		println(expr2)
