@@ -343,11 +343,11 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 		ShortTitle:    billxml.BillXML.ShortTitle,
 		OfficialTitle: billxml.BillXML.ShortTitle,
 	}
-	ctx := context.Background()
-	_, err = db.NewInsert().Model(&bill).Exec(ctx)
-	if err != nil {
-		panic(err)
-	}
+	// ctx := context.Background()
+	// _, err = db.NewInsert().Model(&bill).Exec(ctx)
+	// if err != nil {
+	// 	panic(err)
+	// }
 	return &bill
 }
 func main() {
