@@ -371,22 +371,16 @@ func main() {
 
 	// Create db partitions
 	for _, i := range Tables {
-		var expr = fmt.Sprintf("CREATE TABLE bills_t%s PARTITION OF bills FOR VALUES in ('%s');", i, i)
-
-		var expr2 = fmt.Sprintf("CREATE INDEX ON bills_t%s ('bill_type');", i)
+		var expr = fmt.Sprintf("CREATE TABLE bills_%s PARTITION OF bills FOR VALUES in ('%s');", i, i)
+		var expr2 = fmt.Sprintf("CREATE INDEX ON bills_%s ('bill_type');", i)
 		println(expr)
 		db.Exec(expr)
 		println(expr2)
 		db.Exec(expr2)
 		var expr3 = fmt.Sprintf("ALTER TABLE bills ADD COLUMN %s_ts tsvector GENERATED ALWAYS AS (to_tsvector('english', coalesce(short_title,'') || ' ' || coalesce(summary->>'Text',''))) STORED;", i)
-		var dropindex = fmt.Sprintf("DROP INDEX  IF EXISTS %s_ts_idx CASCADE", i)
 		var expr4 = fmt.Sprintf("CREATE INDEX %s_ts_idx ON bills USING GIN (%s_ts);", i, i)
 		println(expr3)
 		_, err = db.Exec(expr3)
-		if err != nil {
-			panic(err)
-		}
-		_, err = db.Exec(dropindex)
 		if err != nil {
 			panic(err)
 		}
