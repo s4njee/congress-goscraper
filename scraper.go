@@ -353,7 +353,7 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 func main() {
 
 	ctx := context.Background()
-	dsn := "postgres://postgres:postgres@localhost:5432/csearch?sslmode=disable&timeout=1200s"
+	dsn := "postgres://postgres:postgres@db:5432/csearch?sslmode=disable&timeout=1200s"
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
 
@@ -401,7 +401,7 @@ func main() {
 	sem := make(chan struct{}, 64)
 	for i := 93; i <= 117; i++ {
 		for _, table := range Tables {
-			files, err := ioutil.ReadDir(fmt.Sprintf("../congress_api/scraper/congress/data/%s/bills/%s", strconv.Itoa(i), table))
+			files, err := ioutil.ReadDir(fmt.Sprintf("/congress/data/%s/bills/%s", strconv.Itoa(i), table))
 			if err != nil {
 				debug.PrintStack()
 				continue
@@ -410,7 +410,7 @@ func main() {
 			wg.Add(len(files))
 			println(len(files))
 			for _, f := range files {
-				path := fmt.Sprintf("../congress_api/scraper/congress/data/%s/bills/%s/", strconv.Itoa(i), table) + f.Name()
+				path := fmt.Sprintf("/congress/data/%s/bills/%s/", strconv.Itoa(i), table) + f.Name()
 				var xmlcheck = path + "/fdsys_billstatus.xml"
 				if _, err := os.Stat(xmlcheck); err == nil {
 					go func() {
