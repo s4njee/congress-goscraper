@@ -239,8 +239,6 @@ func parse_bill(path string, db *bun.DB) *Bill {
 	res, err := db.NewInsert().Model(&bill).Exec(ctx)
 	if err != nil {
 		panic(err)
-	} else {
-		fmt.Println(res)
 	}
 	return &bill
 
@@ -349,8 +347,6 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 	res, err := db.NewInsert().Model(&bill).Exec(ctx)
 	if err != nil {
 		panic(err)
-	} else {
-		fmt.Println(res)
 	}
 	return &bill
 }
@@ -458,5 +454,4 @@ func main() {
 	}
 	close(sem)
 
-	db.Exec(expr)
 }
