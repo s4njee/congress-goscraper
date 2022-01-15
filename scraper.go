@@ -133,16 +133,18 @@ type BillJSON struct {
 		Type    string
 	} `json:"actions,omitempty"`
 	Sponsors []struct {
-		Title    string
-		Name     string
-		State    string
-		District string
-	} `json:"sponsors,omitempty"`
-	Cosponsors []struct {
-		Title    string
+		Title    string `json:"title,omitempty"`
 		Name     string
 		State    string
 		District string `json:"district,omitempty"`
+		Party string  `json:"party,omitempty"`
+	} `json:"sponsors,omitempty"`
+	Cosponsors []struct {
+		Title    string `json:"title,omitempty"`
+		Name     string
+		State    string
+		District string `json:"district,omitempty"`
+		Party string  `json:"party,omitempty"`
 	} `json:"cosponsors,omitempty"`
 
 	StatusAt      string `json:"status_at""`
@@ -203,6 +205,7 @@ func parse_bill(path string, db *bun.DB) *Bill {
 		}{
 			Name:  Name,
 			State: sponsor.State,
+			Party: sponsor.Party
 		})
 	}
 	var cosponsor_structs []struct {
@@ -229,6 +232,7 @@ func parse_bill(path string, db *bun.DB) *Bill {
 		}{
 			Name:  Name,
 			State: cosponsor.State,
+			Party: cosponsor.Party,
 		})
 	}
 	billID := fmt.Sprintf("%s-%s-%s", billjs.Congress, billjs.BillType, billjs.Number)
