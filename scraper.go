@@ -188,6 +188,12 @@ func parse_bill(path string, db *bun.DB) *Bill {
 	}
 
 	for _, sponsor := range billjs.Sponsors {
+		var Name string
+		if len(sponsor.Title) > 0 {
+			Name = fmt.Sprintf("%s %s [%s]", sponsor.Title, sponsor.Name, sponsor.State)
+		} else {
+			Name = fmt.Sprintf("%s [%s]", sponsor.Name, sponsor.State)
+		}
 		sponsor_structs = append(sponsor_structs, struct {
 			Title    string `json:"omitempty"`
 			Name     string
@@ -195,7 +201,7 @@ func parse_bill(path string, db *bun.DB) *Bill {
 			District string `json:"omitempty"`
 			Party    string `json:"omitempty"`
 		}{
-			Name:  fmt.Sprintf("%s %s [%s]", sponsor.Title, sponsor.Name, sponsor.State),
+			Name:  Name,
 			State: sponsor.State,
 		})
 	}
@@ -208,6 +214,12 @@ func parse_bill(path string, db *bun.DB) *Bill {
 	}
 
 	for _, cosponsor := range billjs.Cosponsors {
+		var Name string
+		if len(cosponsor.Title) > 0 {
+			Name = fmt.Sprintf("%s %s [%s]", cosponsor.Title, cosponsor.Name, cosponsor.State)
+		} else {
+			Name = fmt.Sprintf("%s [%s]", cosponsor.Name, cosponsor.State)
+		}
 		cosponsor_structs = append(cosponsor_structs, struct {
 			Title    string `json:"omitempty"`
 			Name     string
@@ -215,7 +227,7 @@ func parse_bill(path string, db *bun.DB) *Bill {
 			District string `json:"omitempty"`
 			Party    string `json:"omitempty"`
 		}{
-			Name:  fmt.Sprintf("%s %s [%s]", cosponsor.Title, cosponsor.Name, cosponsor.State),
+			Name:  Name,
 			State: cosponsor.State,
 		})
 	}
