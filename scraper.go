@@ -132,7 +132,7 @@ type BillJSON struct {
 		Text    string
 		Type    string
 	} `json:"actions,omitempty"`
-	Sponsor []struct {
+	Sponsor struct {
 		Title    string `json:"title,omitempty"`
 		Name     string
 		State    string
@@ -189,25 +189,24 @@ func parse_bill(path string, db *bun.DB) *Bill {
 		Party    string `json:"omitempty"`
 	}
 
-	for _, sponsor := range billjs.Sponsor {
-		var Name string
-		if len(sponsor.Title) > 0 {
-			Name = fmt.Sprintf("%s %s [%s]", sponsor.Title, sponsor.Name, sponsor.State)
-		} else {
-			Name = fmt.Sprintf("%s [%s]", sponsor.Name, sponsor.State)
-		}
-		sponsor_structs = append(sponsor_structs, struct {
-			Title    string `json:"omitempty"`
-			Name     string
-			State    string
-			District string `json:"omitempty"`
-			Party    string `json:"omitempty"`
-		}{
-			Name:  Name,
-			State: sponsor.State,
-			Party: sponsor.Party,
-		})
+	var Name string
+	if len(billjs.Sponsor.Title) > 0 {
+		Name = fmt.Sprintf("%s %s [%s]", billjs.Sponsor.Title, billjs.Sponsor.Name, billjs.Sponsor.State)
+	} else {
+		Name = fmt.Sprintf("%s [%s]", billjs.Sponsor.Name, billjs.Sponsor.State)
 	}
+	sponsor_structs = append(sponsor_structs, struct {
+		Title    string `json:"omitempty"`
+		Name     string
+		State    string
+		District string `json:"omitempty"`
+		Party    string `json:"omitempty"`
+	}{
+		Name:  Name,
+		State: billjs.Sponsor.State,
+		Party: billjs.Sponsor.Party,
+	})
+
 	var cosponsor_structs []struct {
 		Title    string `json:"omitempty"`
 		Name     string
