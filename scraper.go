@@ -429,7 +429,7 @@ func main() {
 	cmd.Wait()
 
 	// Latest bills only (if above fails)
-	cmd = exec.Command("./run govinfo", "--bulkdata=BILLSTATUS", "--congress=117")
+	cmd = exec.Command("run", "govinfo", "--bulkdata=BILLSTATUS", "--congress=117")
 	stdout, err = cmd.StdoutPipe()
 	if err != nil {
 		panic(err)
