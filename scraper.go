@@ -137,14 +137,14 @@ type BillJSON struct {
 		Name     string
 		State    string
 		District string `json:"district,omitempty"`
-		Party string  `json:"party,omitempty"`
+		Party    string `json:"party,omitempty"`
 	} `json:"sponsors,omitempty"`
 	Cosponsors []struct {
 		Title    string `json:"title,omitempty"`
 		Name     string
 		State    string
 		District string `json:"district,omitempty"`
-		Party string  `json:"party,omitempty"`
+		Party    string `json:"party,omitempty"`
 	} `json:"cosponsors,omitempty"`
 
 	StatusAt      string `json:"status_at""`
@@ -205,7 +205,7 @@ func parse_bill(path string, db *bun.DB) *Bill {
 		}{
 			Name:  Name,
 			State: sponsor.State,
-			Party: sponsor.Party
+			Party: sponsor.Party,
 		})
 	}
 	var cosponsor_structs []struct {
