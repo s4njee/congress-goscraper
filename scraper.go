@@ -1,14 +1,17 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"runtime/debug"
 	"strconv"
 	"strings"
@@ -406,6 +409,26 @@ func main() {
 		}
 	}
 
+	os.Chdir("/congress")
+	// Update Congress Bills
+	cmd := exec.Command("./run govinfo", "--bulkdata=BILLSTATUS")
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		panic(err)
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		panic(err)
+	}
+	err = cmd.Start()
+	if err != nil {
+		panic(err)
+	}
+	go copyOutput(stdout)
+	go copyOutput(stderr)
+	cmd.Wait()
+
+	// Process bills 64 at a time
 	var wg sync.WaitGroup
 	sem := make(chan struct{}, 64)
 	for i := 93; i <= 117; i++ {
@@ -427,7 +450,6 @@ func main() {
 						sem <- struct{}{}
 						mutex.Lock()
 						bills = append(bills, parse_bill_xml(xmlcheck, db))
-						//parse_bill_xml(xmlcheck, db)
 						defer func() { <-sem }()
 						defer wg.Done()
 					}()
@@ -438,8 +460,6 @@ func main() {
 						defer mutex.Unlock()
 						sem <- struct{}{}
 						var bjs = parse_bill(path, db)
-						//parse_bill(path, db)
-						// print(bjs.ShortTitle)
 						mutex.Lock()
 						bills = append(bills, bjs)
 						defer func() { <-sem }()
@@ -463,4 +483,11 @@ func main() {
 	}
 	close(sem)
 
+}
+
+func copyOutput(r io.Reader) {
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
 }
