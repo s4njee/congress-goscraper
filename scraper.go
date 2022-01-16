@@ -460,7 +460,7 @@ func main() {
 			var bills []*Bill
 			wg.Add(len(files))
 			println(len(files))
-			for i, f := range files {
+			for idx, f := range files {
 				path := fmt.Sprintf("/congress/data/%s/bills/%s/", strconv.Itoa(i), table) + f.Name()
 				var xmlcheck = path + "/fdsys_billstatus.xml"
 				if _, err := os.Stat(xmlcheck); err == nil {
@@ -468,7 +468,7 @@ func main() {
 						// defer mutex.Unlock()
 						sem <- struct{}{}
 						// mutex.Lock()
-						bills[i] = parse_bill_xml(xmlcheck, db)
+						bills[idx] = parse_bill_xml(xmlcheck, db)
 						defer func() { <-sem }()
 						defer wg.Done()
 					}()
@@ -480,7 +480,7 @@ func main() {
 						sem <- struct{}{}
 						var bjs = parse_bill(path, db)
 						// mutex.Lock()
-						bills[i] = bjs
+						bills[idx] = bjs
 						defer func() { <-sem }()
 						defer wg.Done()
 					}()
