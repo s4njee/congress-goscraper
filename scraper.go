@@ -448,7 +448,7 @@ func main() {
 	cmd.Wait()
 
 	// Process bills 64 at a time
-	var wg *sync.WaitGroup
+	var wg sync.WaitGroup
 	sem := make(chan struct{}, 64)
 	for i := 93; i <= 117; i++ {
 		for _, table := range Tables {
