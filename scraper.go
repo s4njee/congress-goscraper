@@ -24,7 +24,7 @@ import (
 
 var Tables = [8]string{"s", "hr", "hconres", "hjres", "hres", "sconres", "sjres", "sres"}
 
-// var mutex = &sync.Mutex{}
+var mutex = &sync.Mutex{}
 
 type XMLSummaries struct {
 	XMLName          xml.Name         `xml:"summaries"`
@@ -457,18 +457,18 @@ func main() {
 				debug.PrintStack()
 				continue
 			}
-			bills := make([]*Bill, len(files))
+			var bills []*Bill
 			wg.Add(len(files))
 			println(len(files))
-			for idx, f := range files {
+			for _, f := range files {
 				path := fmt.Sprintf("/congress/data/%s/bills/%s/", strconv.Itoa(i), table) + f.Name()
 				var xmlcheck = path + "/fdsys_billstatus.xml"
 				if _, err := os.Stat(xmlcheck); err == nil {
 					go func() {
-						// defer mutex.Unlock()
+						defer mutex.Unlock()
 						sem <- struct{}{}
-						// mutex.Lock()
-						bills[idx] = parse_bill_xml(xmlcheck, db)
+						mutex.Lock()
+						bills = append(bills, parse_bill_xml(xmlcheck, db))
 						defer func() { <-sem }()
 						defer wg.Done()
 					}()
@@ -476,11 +476,11 @@ func main() {
 				} else if errors.Is(err, os.ErrNotExist) {
 					path += "/data.json"
 					go func() {
-						// defer mutex.Unlock()
+						defer mutex.Unlock()
 						sem <- struct{}{}
 						var bjs = parse_bill(path, db)
-						// mutex.Lock()
-						bills[idx] = bjs
+						mutex.Lock()
+						bills = append(bills, bjs)
 						defer func() { <-sem }()
 						defer wg.Done()
 					}()
