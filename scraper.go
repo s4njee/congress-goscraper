@@ -457,7 +457,7 @@ func main() {
 				debug.PrintStack()
 				continue
 			}
-			var bills []*Bill
+			bills := make([]*Bill, len(files))
 			wg.Add(len(files))
 			println(len(files))
 			for idx, f := range files {
