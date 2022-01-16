@@ -448,7 +448,7 @@ func main() {
 	cmd.Wait()
 
 	// Process bills 64 at a time
-	var wg sync.WaitGroup
+	var wg *sync.WaitGroup
 	sem := make(chan struct{}, 64)
 	for i := 93; i <= 117; i++ {
 		for _, table := range Tables {
@@ -490,6 +490,7 @@ func main() {
 			wg.Wait()
 
 			if len(bills) > 0 {
+				fmt.Printf("%v", bills)
 				res, err := db.NewInsert().Model(&bills).Exec(ctx)
 				fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
 				if err != nil {
