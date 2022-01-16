@@ -23,7 +23,8 @@ import (
 )
 
 var Tables = [8]string{"s", "hr", "hconres", "hjres", "hres", "sconres", "sjres", "sres"}
-var mutex = &sync.Mutex{}
+
+// var mutex = &sync.Mutex{}
 
 type XMLSummaries struct {
 	XMLName          xml.Name         `xml:"summaries"`
@@ -376,7 +377,7 @@ func main() {
 	db := bun.NewDB(sqldb, pgdialect.New())
 
 	// Create db code
-	var expr = fmt.Sprintf("DROP TABLE IF EXISTS bills CASCADE;")
+	var expr = "DROP TABLE IF EXISTS bills CASCADE;"
 	println(expr)
 	db.Exec(expr)
 	_, err := db.NewCreateTable().
@@ -459,15 +460,15 @@ func main() {
 			var bills []*Bill
 			wg.Add(len(files))
 			println(len(files))
-			for _, f := range files {
+			for i, f := range files {
 				path := fmt.Sprintf("/congress/data/%s/bills/%s/", strconv.Itoa(i), table) + f.Name()
 				var xmlcheck = path + "/fdsys_billstatus.xml"
 				if _, err := os.Stat(xmlcheck); err == nil {
 					go func() {
-						defer mutex.Unlock()
+						// defer mutex.Unlock()
 						sem <- struct{}{}
-						mutex.Lock()
-						bills = append(bills, parse_bill_xml(xmlcheck, db))
+						// mutex.Lock()
+						bills[i] = parse_bill_xml(xmlcheck, db)
 						defer func() { <-sem }()
 						defer wg.Done()
 					}()
@@ -475,11 +476,11 @@ func main() {
 				} else if errors.Is(err, os.ErrNotExist) {
 					path += "/data.json"
 					go func() {
-						defer mutex.Unlock()
+						// defer mutex.Unlock()
 						sem <- struct{}{}
 						var bjs = parse_bill(path, db)
-						mutex.Lock()
-						bills = append(bills, bjs)
+						// mutex.Lock()
+						bills[i] = bjs
 						defer func() { <-sem }()
 						defer wg.Done()
 					}()
