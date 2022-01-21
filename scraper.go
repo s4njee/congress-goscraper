@@ -490,7 +490,7 @@ func main() {
 			wg.Wait()
 
 			if len(bills) > 0 {
-				fmt.Printf("%v", bills)
+				// fmt.Printf("%v", bills)
 				res, err := db.NewInsert().Model(&bills).Exec(ctx)
 				fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
 				if err != nil {
