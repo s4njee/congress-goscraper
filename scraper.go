@@ -435,8 +435,6 @@ func main() {
 				var xmlcheck = path + "/fdsys_billstatus.xml"
 				if _, err := os.Stat(xmlcheck); err == nil {
 					go func(z int) {
-						sqldb = sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
-						db = bun.NewDB(sqldb, pgdialect.New())
 						// defer mutex.Unlock()
 						sem <- struct{}{}
 						// mutex.Lock()
@@ -448,8 +446,6 @@ func main() {
 				} else if errors.Is(err, os.ErrNotExist) {
 					path += "/data.json"
 					go func(z int) {
-						sqldb = sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
-						db = bun.NewDB(sqldb, pgdialect.New())
 						// defer mutex.Unlock()
 						sem <- struct{}{}
 						var bjs = parse_bill(path, db)
