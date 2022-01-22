@@ -369,7 +369,10 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 	// }
 	return &bill
 }
+
 func main() {
+	// Runs unitedstates/congress run script to update bill xmls
+	update_bills()
 
 	ctx := context.Background()
 	dsn := "postgres://postgres:postgres@db:5432/csearch?sslmode=disable&timeout=1200s"
@@ -398,46 +401,9 @@ func main() {
 		db.Exec(expr2)
 	}
 
-	os.Chdir("/congress")
-	// Update Congress Bills
-	cmd := exec.Command("./run", "govinfo", "--bulkdata=BILLSTATUS")
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		panic(err)
-	}
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		panic(err)
-	}
-	err = cmd.Start()
-	if err != nil {
-		panic(err)
-	}
-	go copyOutput(stdout)
-	go copyOutput(stderr)
-	cmd.Wait()
-
-	// Latest bills only (if above fails)
-	cmd = exec.Command("./run", "govinfo", "--bulkdata=BILLSTATUS", "--congress=117")
-	stdout, err = cmd.StdoutPipe()
-	if err != nil {
-		panic(err)
-	}
-	stderr, err = cmd.StderrPipe()
-	if err != nil {
-		panic(err)
-	}
-	err = cmd.Start()
-	if err != nil {
-		panic(err)
-	}
-	go copyOutput(stdout)
-	go copyOutput(stderr)
-	cmd.Wait()
-
 	// Process bills 64 at a time
 	var wg sync.WaitGroup
-	sem := make(chan struct{}, 64)
+	sem := make(chan struct{}, 128)
 	for i := 93; i <= 117; i++ {
 		for _, table := range Tables {
 			files, err := ioutil.ReadDir(fmt.Sprintf("/congress/data/%s/bills/%s", strconv.Itoa(i), table))
@@ -506,6 +472,47 @@ func main() {
 		}
 	}
 }
+
+func update_bills() {
+	os.Chdir("/congress")
+	// Update Congress Bills
+	cmd := exec.Command("./run", "govinfo", "--bulkdata=BILLSTATUS")
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		panic(err)
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		panic(err)
+	}
+	err = cmd.Start()
+	if err != nil {
+		panic(err)
+	}
+	go copyOutput(stdout)
+	go copyOutput(stderr)
+	cmd.Wait()
+
+	// Latest bills only (if above fails)
+	cmd = exec.Command("./run", "govinfo", "--bulkdata=BILLSTATUS", "--congress=117")
+	stdout, err = cmd.StdoutPipe()
+	if err != nil {
+		panic(err)
+	}
+	stderr, err = cmd.StderrPipe()
+	if err != nil {
+		panic(err)
+	}
+	err = cmd.Start()
+	if err != nil {
+		panic(err)
+	}
+	go copyOutput(stdout)
+	go copyOutput(stderr)
+	cmd.Wait()
+
+}
+
 func copyOutput(r io.Reader) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
