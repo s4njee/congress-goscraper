@@ -439,8 +439,6 @@ func main() {
 						// defer mutex.Unlock()
 						sem <- struct{}{}
 						// mutex.Lock()
-						sqldb = sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
-						db = bun.NewDB(sqldb, pgdialect.New())
 						bills[z] = parse_bill_xml(xmlcheck, db)
 						defer func() { <-sem }()
 						defer wg.Done()
@@ -451,8 +449,6 @@ func main() {
 					go func(z int) {
 						// defer mutex.Unlock()
 						sem <- struct{}{}
-						sqldb = sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
-						db = bun.NewDB(sqldb, pgdialect.New())
 						var bjs = parse_bill(path, db)
 						// mutex.Lock()
 						bills[z] = bjs
