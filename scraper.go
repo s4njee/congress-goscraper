@@ -435,9 +435,12 @@ func main() {
 				var xmlcheck = path + "/fdsys_billstatus.xml"
 				if _, err := os.Stat(xmlcheck); err == nil {
 					go func(z int) {
+
 						// defer mutex.Unlock()
 						sem <- struct{}{}
 						// mutex.Lock()
+						sqldb = sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
+						db = bun.NewDB(sqldb, pgdialect.New())
 						bills[z] = parse_bill_xml(xmlcheck, db)
 						defer func() { <-sem }()
 						defer wg.Done()
@@ -448,6 +451,8 @@ func main() {
 					go func(z int) {
 						// defer mutex.Unlock()
 						sem <- struct{}{}
+						sqldb = sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
+						db = bun.NewDB(sqldb, pgdialect.New())
 						var bjs = parse_bill(path, db)
 						// mutex.Lock()
 						bills[z] = bjs
@@ -459,15 +464,15 @@ func main() {
 			}
 			wg.Wait()
 
-			// if len(bills) > 0 {
-			// 	res, err := db.NewInsert().Model(&bills).Exec(ctx)
-			// 	fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
-			// 	if err != nil {
-			// 		panic(err)
-			// 	} else {
-			// 		fmt.Println(res)
-			// 	}
-			// }
+			if len(bills) > 0 {
+				res, err := db.NewInsert().Model(&bills).Exec(ctx)
+				fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
+				if err != nil {
+					panic(err)
+				} else {
+					fmt.Println(res)
+				}
+			}
 		}
 	}
 	close(sem)
