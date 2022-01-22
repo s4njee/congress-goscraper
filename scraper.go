@@ -460,19 +460,20 @@ func main() {
 			}
 			wg.Wait()
 
-		// 	if len(bills) > 0 {
-		// 		res, err := db.NewInsert().Model(&bills).Exec(ctx)
-		// 		fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
-		// 		if err != nil {
-		// 			panic(err)
-		// 		} else {
-		// 			fmt.Println(res)
-		// 		}
-		// 	}
-		// }
-	}
-	close(sem)
+			// 	if len(bills) > 0 {
+			// 		res, err := db.NewInsert().Model(&bills).Exec(ctx)
+			// 		fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
+			// 		if err != nil {
+			// 			panic(err)
+			// 		} else {
+			// 			fmt.Println(res)
+			// 		}
+			// 	}
+			// }
+		}
+		close(sem)
 
+	}
 }
 
 func update_bills() {
