@@ -396,18 +396,6 @@ func main() {
 		db.Exec(expr)
 		println(expr2)
 		db.Exec(expr2)
-		var expr3 = fmt.Sprintf("ALTER TABLE bills ADD COLUMN %s_ts tsvector GENERATED ALWAYS AS (to_tsvector('english', coalesce(short_title,'') || ' ' || coalesce(summary->>'Text',''))) STORED;", i)
-		var expr4 = fmt.Sprintf("CREATE INDEX %s_ts_idx ON bills USING GIN (%s_ts);", i, i)
-		println(expr3)
-		_, err = db.Exec(expr3)
-		if err != nil {
-			panic(err)
-		}
-		println(expr4)
-		_, err = db.Exec(expr4)
-		if err != nil {
-			panic(err)
-		}
 	}
 
 	os.Chdir("/congress")
@@ -490,7 +478,6 @@ func main() {
 			wg.Wait()
 
 			if len(bills) > 0 {
-				// fmt.Printf("%v", bills)
 				res, err := db.NewInsert().Model(&bills).Exec(ctx)
 				fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
 				if err != nil {
@@ -503,8 +490,22 @@ func main() {
 	}
 	close(sem)
 
+	// Create text search vectors and indices
+	for _, i := range Tables {
+		var expr3 = fmt.Sprintf("ALTER TABLE bills ADD COLUMN %s_ts tsvector GENERATED ALWAYS AS (to_tsvector('english', coalesce(short_title,'') || ' ' || coalesce(summary->>'Text',''))) STORED;", i)
+		var expr4 = fmt.Sprintf("CREATE INDEX %s_ts_idx ON bills USING GIN (%s_ts);", i, i)
+		println(expr3)
+		_, err = db.Exec(expr3)
+		if err != nil {
+			panic(err)
+		}
+		println(expr4)
+		_, err = db.Exec(expr4)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
-
 func copyOutput(r io.Reader) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
