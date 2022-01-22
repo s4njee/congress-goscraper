@@ -254,11 +254,11 @@ func parse_bill(path string, db *bun.DB) *Bill {
 		ShortTitle:    billjs.ShortTitle,
 		OfficialTitle: billjs.OfficialTitle,
 	}
-	// ctx := context.Background()
-	// _, err = db.NewInsert().Model(&bill).Exec(ctx)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	ctx := context.Background()
+	_, err = db.NewInsert().Model(&bill).Exec(ctx)
+	if err != nil {
+		panic(err)
+	}
 	return &bill
 
 }
@@ -362,11 +362,11 @@ func parse_bill_xml(path string, db *bun.DB) *Bill {
 		ShortTitle:    billxml.BillXML.ShortTitle,
 		OfficialTitle: billxml.BillXML.ShortTitle,
 	}
-	// ctx := context.Background()
-	// _, err = db.NewInsert().Model(&bill).Exec(ctx)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	ctx := context.Background()
+	_, err = db.NewInsert().Model(&bill).Exec(ctx)
+	if err != nil {
+		panic(err)
+	}
 	return &bill
 }
 
@@ -401,61 +401,6 @@ func main() {
 		db.Exec(expr2)
 	}
 
-	// Process bills 64 at a time
-	var wg sync.WaitGroup
-	sem := make(chan struct{}, 128)
-	for i := 93; i <= 117; i++ {
-		for _, table := range Tables {
-			files, err := ioutil.ReadDir(fmt.Sprintf("/congress/data/%s/bills/%s", strconv.Itoa(i), table))
-			if err != nil {
-				debug.PrintStack()
-				continue
-			}
-			var bills = make([]*Bill, len(files))
-			wg.Add(len(files))
-			println(len(files))
-			for z, f := range files {
-				path := fmt.Sprintf("/congress/data/%s/bills/%s/", strconv.Itoa(i), table) + f.Name()
-				var xmlcheck = path + "/fdsys_billstatus.xml"
-				if _, err := os.Stat(xmlcheck); err == nil {
-					go func(z int) {
-						// defer mutex.Unlock()
-						sem <- struct{}{}
-						// mutex.Lock()
-						bills[z] = parse_bill_xml(xmlcheck, db)
-						defer func() { <-sem }()
-						defer wg.Done()
-					}(z)
-
-				} else if errors.Is(err, os.ErrNotExist) {
-					path += "/data.json"
-					go func(z int) {
-						// defer mutex.Unlock()
-						sem <- struct{}{}
-						var bjs = parse_bill(path, db)
-						// mutex.Lock()
-						bills[z] = bjs
-						defer func() { <-sem }()
-						defer wg.Done()
-					}(z)
-				}
-
-			}
-			wg.Wait()
-
-			if len(bills) > 0 {
-				res, err := db.NewInsert().Model(&bills).Exec(ctx)
-				fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
-				if err != nil {
-					panic(err)
-				} else {
-					fmt.Println(res)
-				}
-			}
-		}
-	}
-	close(sem)
-
 	// Create text search vectors and indices
 	for _, i := range Tables {
 		var expr3 = fmt.Sprintf("ALTER TABLE bills ADD COLUMN %s_ts tsvector GENERATED ALWAYS AS (to_tsvector('english', coalesce(short_title,'') || ' ' || coalesce(summary->>'Text',''))) STORED;", i)
@@ -471,6 +416,66 @@ func main() {
 			panic(err)
 		}
 	}
+
+	// Process bills 64 at a time
+	var wg sync.WaitGroup
+	sem := make(chan struct{}, 64)
+	for i := 93; i <= 117; i++ {
+		for _, table := range Tables {
+			files, err := ioutil.ReadDir(fmt.Sprintf("/congress/data/%s/bills/%s", strconv.Itoa(i), table))
+			if err != nil {
+				debug.PrintStack()
+				continue
+			}
+			var bills = make([]*Bill, len(files))
+			wg.Add(len(files))
+			println(len(files))
+			for z, f := range files {
+				path := fmt.Sprintf("/congress/data/%s/bills/%s/", strconv.Itoa(i), table) + f.Name()
+				var xmlcheck = path + "/fdsys_billstatus.xml"
+				if _, err := os.Stat(xmlcheck); err == nil {
+					go func(z int) {
+						sqldb = sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
+						db = bun.NewDB(sqldb, pgdialect.New())
+						// defer mutex.Unlock()
+						sem <- struct{}{}
+						// mutex.Lock()
+						bills[z] = parse_bill_xml(xmlcheck, db)
+						defer func() { <-sem }()
+						defer wg.Done()
+					}(z)
+
+				} else if errors.Is(err, os.ErrNotExist) {
+					path += "/data.json"
+					go func(z int) {
+						sqldb = sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
+						db = bun.NewDB(sqldb, pgdialect.New())
+						// defer mutex.Unlock()
+						sem <- struct{}{}
+						var bjs = parse_bill(path, db)
+						// mutex.Lock()
+						bills[z] = bjs
+						defer func() { <-sem }()
+						defer wg.Done()
+					}(z)
+				}
+
+			}
+			wg.Wait()
+
+			// if len(bills) > 0 {
+			// 	res, err := db.NewInsert().Model(&bills).Exec(ctx)
+			// 	fmt.Printf("Congress: %s Type: %s Inserted %s rows", strconv.Itoa(i), table, strconv.Itoa(len(bills)))
+			// 	if err != nil {
+			// 		panic(err)
+			// 	} else {
+			// 		fmt.Println(res)
+			// 	}
+			// }
+		}
+	}
+	close(sem)
+
 }
 
 func update_bills() {
